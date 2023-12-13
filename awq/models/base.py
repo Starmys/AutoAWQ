@@ -18,6 +18,7 @@ from transformers import (
     AutoConfig,
     PreTrainedModel,
     PretrainedConfig,
+    LlamaForCausalLM,
 )
 from accelerate.big_modeling import (
     init_empty_weights,
@@ -116,7 +117,7 @@ class BaseAWQForCausalLM(nn.Module):
         )
 
         # If not quantized, must load with AutoModelForCausalLM
-        model = AutoModelForCausalLM.from_pretrained(
+        model = LlamaForCausalLM.from_pretrained(
             model_weights_path,
             trust_remote_code=trust_remote_code,
             torch_dtype=torch_dtype,
@@ -145,7 +146,7 @@ class BaseAWQForCausalLM(nn.Module):
         
         # [STEP 3] Load model
         with init_empty_weights():
-            model = AutoModelForCausalLM.from_config(config=config, torch_dtype=torch_dtype, trust_remote_code=trust_remote_code)
+            model = LlamaForCausalLM.from_config(config=config, torch_dtype=torch_dtype, trust_remote_code=trust_remote_code)
         
         # Prepare WQLinear layers, replace nn.Linear
         self._load_quantized_modules(self, model, quant_config, quant_config.version)

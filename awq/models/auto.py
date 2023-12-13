@@ -1,5 +1,5 @@
 import os
-from transformers import AutoConfig
+from transformers import AutoConfig, LlamaConfig
 from awq.models import *
 from awq.models.base import BaseAWQForCausalLM
 
@@ -21,7 +21,8 @@ AWQ_CAUSAL_LM_MODEL_MAP = {
 }
 
 def check_and_get_model_type(model_dir, trust_remote_code=True, **model_init_kwargs):
-    config = AutoConfig.from_pretrained(model_dir, trust_remote_code=trust_remote_code, **model_init_kwargs)
+    config = LlamaConfig.from_pretrained(model_dir, trust_remote_code=trust_remote_code, **model_init_kwargs)
+    config.model_type = 'llama'
     if config.model_type not in AWQ_CAUSAL_LM_MODEL_MAP.keys():
         raise TypeError(f"{config.model_type} isn't supported yet.")
     model_type = config.model_type
