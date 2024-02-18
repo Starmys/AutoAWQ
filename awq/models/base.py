@@ -16,6 +16,7 @@ from awq.utils.module import get_named_linears, set_op_by_name
 from transformers import (
     AutoModelForCausalLM,
     AutoConfig,
+    LlamaConfig,
     PreTrainedModel,
     PretrainedConfig,
     LlamaForCausalLM,
@@ -194,11 +195,11 @@ class BaseAWQForCausalLM(nn.Module):
         
         # Load model config and set max generation length
         if max_new_tokens is None and hasattr(self, 'max_new_tokens_key'):
-            config = AutoConfig.from_pretrained(model_path, trust_remote_code=trust_remote_code, **config_kwargs)
+            config = LlamaConfig.from_pretrained(model_path, trust_remote_code=trust_remote_code, **config_kwargs)
             config.max_new_tokens = getattr(config, self.max_new_tokens_key)
         else:
             max_new_tokens = 2048 if max_new_tokens is None else max_new_tokens
-            config = AutoConfig.from_pretrained(model_path, trust_remote_code=trust_remote_code, **config_kwargs)
+            config = LlamaConfig.from_pretrained(model_path, trust_remote_code=trust_remote_code, **config_kwargs)
             config.max_new_tokens = max_new_tokens
         
         return model_weights_path, config, quant_config
